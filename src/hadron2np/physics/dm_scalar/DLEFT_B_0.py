@@ -24,10 +24,9 @@ def Gamma(L_S, L_P, L_V, L_A, mdm1, mdm2, mIS, miq, mfq, fB) -> float:
     return f_phase_space * amp_sq
 
 
-def amp_square_2_0_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_dm1, m_dm2) -> float:
+def amp_square_2_0_1(wcs: dict, f_B, m_iq, m_fq, m_IS, m_dm1, m_dm2) -> float:
     wc_P = wcs["P"]
     wc_A = wcs["A"]
-    f_B = wcs["fB"]
 
     ampSq22 = (
         4

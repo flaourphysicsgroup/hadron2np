@@ -6,7 +6,7 @@ def amp_square_2_1_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_FS, m_dm1) -> flo
     wc_A = wcs['A']
     wc_T = wcs['T']
     wc_T5 = wcs['T5']
-    FFV = ffs['f+']
+    FFV = ffs['V']
     FFA1 = ffs['A1']
     FFA2 = ffs['A2']
     FFT1 = ffs['T1']
