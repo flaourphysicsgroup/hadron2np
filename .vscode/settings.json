@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "../../../Documents/Academic-GitRepo/form-factor-Zhang-Repo"
+    ]
+}

@@ -25,16 +25,16 @@ wcs in S/P basis:
   - ["L_T_dX", 5]
   - ["L_T5_dX", 5]
 
-  - ["L_S_dXX", 5]
-  - ["L_P_dXX", 5]
-  - ["L_V_dXX", 6]
-  - ["L_A_dXX", 6]
-  - ["L_V_dXtX", 6]
-  - ["L_A_dXtX", 6]
-  - ["L_T_dXX", 5]
-  - ["L_T5_dXX", 5]
-  - ["L_DV_dXX", 6]
-  - ["L_DA_dXX", 6]
+  - ["L_S_dX2", 5]
+  - ["L_P_dX2", 5]
+  - ["L_V_dX2", 6]
+  - ["L_A_dX2", 6]
+  - ["L_Vtilde_dX2", 6]
+  - ["L_Atilde_dX2", 6]
+  - ["L_T_dX2", 5]
+  - ["L_T5_dX2", 5]
+  - ["L_Vpartial_dX2", 6]
+  - ["L_Apartial_dX2", 6]
 
 wcs in L/R basis:
   # scalar section: 6
