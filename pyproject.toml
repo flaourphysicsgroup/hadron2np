@@ -52,7 +52,7 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true
 
 [tool.uv.sources]
-hmff = { path = "../../../Documents/Academic-GitRepo/form-factor-Zhang-Repo" }
+hmff = { path = "../../../Documents/Academic-GitRepo/form-factor" }
 
 [tool.ruff.format]
 quote-style = "preserve"

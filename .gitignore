@@ -419,4 +419,3 @@ $RECYCLE.BIN/
 
 tests/*
 !tests/test_hadron2np.ipynb
-uv.lock
