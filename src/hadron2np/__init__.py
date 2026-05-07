@@ -24,17 +24,17 @@ def todo_decay_processes():
 
 
 
-def new_decay_process(particles: list, basis='DLEFT(L/R)') -> DecayProcessBase:
+def new_decay_process(particles: list, basis='DLEFT(L/R)', ff_imp=None) -> DecayProcessBase:
     """生成 DecayProcess 对象, 根据末态粒子数量生成对应的 TwoBodyDecayProcess 或 ThreeBodyDecayProcess"""
     match len(particles):
         case 3:
             if particles[1] in ['phi', 'X', 'chi']:  # 防止出现 [IS, X1, X2] 这种情况
                 particles.insert(1, '0')
-            return TwoBodyDecayProcess(particles, basis)
+            return TwoBodyDecayProcess(particles, basis, ff_imp=ff_imp)
         case 4 if particles[1] == '0':
-            return TwoBodyDecayProcess(particles, basis)
+            return TwoBodyDecayProcess(particles, basis, ff_imp=ff_imp)
         case 4:
-            return ThreeBodyDecayProcess(particles, basis)
+            return ThreeBodyDecayProcess(particles, basis, ff_imp=ff_imp)
 
 
 __all__ = ['new_decay_process', 'parameters', 'parameter_groups', 'parameters_dict', 'config']

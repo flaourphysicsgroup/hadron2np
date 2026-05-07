@@ -79,7 +79,7 @@ def width_2_1_1(
 
 def partial_width_3_1_1(
     wcs: dict, ff_imp: Impl, m_sm: list, m_dm: list, 
-    fcnc_hadron: str, flavor_index: list, qsq
+    fcnc_hadron: str, flavor_index: list, qsq, dm_mode=0
 ):
     wc_S = wcs['L_S_dX2'][*flavor_index]
     wc_P = wcs['L_P_dX2'][*flavor_index]

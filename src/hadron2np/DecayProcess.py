@@ -3,11 +3,18 @@ from hadron2np.physics import dm_scalar, dm_fermion, dm_vector
 from hadron2np.DLEFT import get_zero_wcs, convert_to_SP_basis
 from scipy import integrate
 from wilson.util import qcd
+import hmff
 
+# dm 模式主要用于区分费米型 DM 的三种不同组合
+DM_MODES = {
+            ('chi', 'chi'): 1,
+            ('chibar', 'chi'): 2,
+            ('chibar', 'chibar'): 3
+        }
 
 class DecayProcessBase():
 
-    def __init__(self, particles: list, basis: str, parameter=hadron2np.parameters_dict):
+    def __init__(self, particles: list, basis: str, parameter=hadron2np.parameters_dict, ff_imp=None):
         # 定义 name 字符串
         self.name = f'{particles[0]}->{particles[1]}' + '+' + ''.join(particles[2:])
         if particles[1] == '0':
@@ -18,12 +25,17 @@ class DecayProcessBase():
         self.FS = particles[1]
         self.dms = particles[2:]
         self.dm_name = particles[2]
+        self.dm_mode = DM_MODES.get(tuple(particles[2:]), 0)
+        
         self.particles = particles
 
         # 确认 FCNC 过程: 强子矩阵元初末态, 夸克流
-        self.fcnc_hadron = f'{particles[0]}->{particles[1]}'
+        self.fcnc_hadron = '->'.join(
+            p[:-1] if p.endswith(('+', '0')) else p for p in particles[:2]
+        )
         try:
             self.fcnc_quark = hadron2np.config['hadron matrix element'][self.fcnc_hadron][0]
+            self.fcnc_hadron_class = hadron2np.config['hadron matrix element'][self.fcnc_hadron][2]
         except KeyError:
             raise ValueError(f'{self.fcnc_hadron} 不是合法的衰变过程.')
 
@@ -33,16 +45,26 @@ class DecayProcessBase():
 
         # 确认接口
         self.par = parameter
-        self.basis = basis
+        # 目前只支持 DLEFT(S/P) 算符基
+        if basis == 'DLEFT(S/P)':
+            self.basis = basis
+        else:
+            raise ValueError(f'{basis} 不是合法的算符基矢.')
         self.wcs = self.get_all_wcs()
         self.IS_width = self.par['Gamma_' + self.IS]
+
         self._scale = self.get_decay_energy_scale()
         self.index = self.get_flavour_index()
         self.m_sm = self.get_sm_masses()
+        self.m_dm = [0, 0]
+
+        self.ff_imp_name = hadron2np.config['form factor scheme']
+        if ff_imp is not None:
+            self.ff_imp_name = ff_imp
         if self.FS != '0':
-            self._formfactor = hadron2np.parameter_groups[self.fcnc_hadron +
-                                                    ' form factors'].get_implementation(
-                                                        name=hadron2np.config['form factor scheme'])
+            self._formfactor = hmff.formfactors[self.fcnc_hadron].get_impl(
+                self.ff_imp_name
+            )
         else:
             # 对于类似 Bs -> XX 的过程, 应该使用衰变常数而非形状因子
             self._formfactor = parameter['f_' + self.IS]
@@ -125,11 +147,15 @@ class DecayProcessBase():
             return True
         else:
             return False
+    
+    def set_dm_masses(self, m_dm: list) -> None:
+        self.m_dm = m_dm
 
     def get_all_wcs(self):
-        return get_zero_wcs('DLEFT(S/P)')
+        return get_zero_wcs(self.basis)
 
     def set_wcs(self, new_wcs: dict, basis=None) -> None:
+        """根据算符基，初始 self.wcs 字典"""
         if basis is not None:
             self.basis = basis
         all_wcs = get_zero_wcs(self.basis)
@@ -151,18 +177,21 @@ class DecayProcessBase():
 
 class TwoBodyDecayProcess(DecayProcessBase):
 
-    def __init__(self, particles, basis, parameter=hadron2np.parameters_dict):
-        super().__init__(particles, basis, parameter)
+    def __init__(self, particles, basis, parameter=hadron2np.parameters_dict, ff_imp=None):
+        super().__init__(particles, basis, parameter, ff_imp)
 
     def width(self, wcs, m_dm) -> float:
         self.set_wcs(wcs)
+        self.set_dm_masses(m_dm)
         if self.FS == '0':
             decay_constant = self.par['f_' + self.IS]
-            bare_width = self.analytic_dir.Gamma_IS_XX(self.fcnc_hadron, self.index, self.wcs,
-                                                       m_dm, self.m_sm, decay_constant)
+            bare_width = self.analytic_dir.width_2_0_1(
+                self.wcs, decay_constant, self.m_sm, self.m_dm, self.fcnc_hadron_class, self.index
+            )
         elif len(self.dms) < 2:
-            bare_width = self.analytic_dir.Gamma_IS_FSX(self.fcnc_hadron, self.index, self.wcs,
-                                                        m_dm, self.m_sm, self._formfactor)
+            bare_width = self.analytic_dir.width_2_1_1(
+                self.wcs, self._formfactor, self.m_sm, self.m_dm, self.fcnc_hadron_class, self.index
+            )
         else:
             raise ValueError('两体衰变宽度计算错误: ' + self.name)
 
@@ -182,16 +211,25 @@ class TwoBodyDecayProcess(DecayProcessBase):
 
 class ThreeBodyDecayProcess(DecayProcessBase):
 
-    def __init__(self, particles: list, basis, parameter=hadron2np.parameters_dict):
-        super().__init__(particles, basis, parameter)
+    def __init__(self, particles: list, basis, parameter=hadron2np.parameters_dict, ff_imp=None):
+        super().__init__(particles, basis, parameter, ff_imp)
 
     def dWidth_over_dqsq(self, wcs, m_dm, qsq) -> float:
         self.set_wcs(wcs)
+        self.set_dm_masses(m_dm)
         if (self.FS == '0') or (len(self.dms) < 2):
             raise ValueError(f'物理意义不明确: {self.name} 微分宽度.')
         else:
-            bare_dWidth = self.analytic_dir.dGamma_IS_FSXX(self.fcnc_hadron, self.index, self.wcs,
-                                                           m_dm, self.m_sm, self._formfactor, qsq)
+            bare_dWidth = self.analytic_dir.partial_width_3_1_1(
+                self.wcs,
+                self._formfactor,
+                self.m_sm,
+                self.m_dm,
+                self.fcnc_hadron_class,
+                self.index,
+                qsq,
+                self.dm_mode,
+            )
         CG_factor = 1  # 考虑中性的 pi0 中会有一个 sqrt(2)
         dm_factor = 1  # 考虑末态两个 phi 相同时的全同性
         if self.FS == 'pi0':
@@ -203,17 +241,18 @@ class ThreeBodyDecayProcess(DecayProcessBase):
 
     def dBr_over_dqsq(self, wcs, m_dm, qsq) -> float:
         dwidth = self.dWidth_over_dqsq(wcs, m_dm, qsq)
-        width_IS = self.par['Gamma_' + self.IS]
+        width_IS = self.IS_width
+        # 返回 BR = Gamma / Gamma_total
         return dwidth / (width_IS + self.width(wcs, m_dm))
 
     def width(self, wcs: dict, m_dm: list):
+        """计算新物理衰变过程的衰变总宽度"""
         m_dm_1, m_dm_2 = m_dm
         m_IS, m_FS, _, _ = self.get_sm_masses()
 
         def _dGamma_dqsq(qsq):
             return self.dWidth_over_dqsq(wcs, m_dm, qsq)
 
-        # 返回 BR = Gamma / Gamma_total
         q2_min = (m_dm_1 + m_dm_2)**2
         q2_max = (m_IS - m_FS)**2
         width = integrate.quad(_dGamma_dqsq, q2_min, q2_max)[0]
