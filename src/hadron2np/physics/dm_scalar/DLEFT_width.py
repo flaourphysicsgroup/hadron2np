@@ -64,7 +64,7 @@ def width_2_1_1(
 
 def partial_width_3_1_1(
     wcs: dict, ff_imp: Impl, m_sm: list, m_dm: list, 
-    fcnc_hadron: str, flavor_index: list, qsq, theta1
+    fcnc_hadron: str, flavor_index: list, qsq
 ):
     wc_S = wcs['L_S_dphi2'][*flavor_index]
     wc_P = wcs['L_P_dphi2'][*flavor_index]
@@ -86,5 +86,5 @@ def partial_width_3_1_1(
         #     amp_square = amp_square_Lb_L_3_1_1
         case _:
             raise NotImplementedError(f'Decay process not implementd yet: {fcnc_hadron}')
-    f_phase_space = ps.three_body_phase_space_factor(m_IS, m_dm_1, m_dm_2, m_FS, np.sqrt(qsq), theta1)
-    return f_phase_space * amp_square(wcs_dict, ffs, m_iq, m_fq, m_IS, m_FS, m_dm_1, m_dm_2, qsq, theta1)
+    f_phase_space = ps.three_body_phase_space_factor(m_IS, m_dm_1, m_dm_2, m_FS, np.sqrt(qsq))
+    return f_phase_space * amp_square(wcs_dict, ffs, m_iq, m_fq, m_IS, m_FS, m_dm_1, m_dm_2, qsq)

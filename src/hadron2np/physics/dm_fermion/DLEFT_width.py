@@ -47,7 +47,7 @@ def width_2_0_1(wcs: dict, f_B: float, m_sm: list, m_dm: list, fcnc_hadron: str,
 
 def partial_width_3_1_1(
     wcs: dict, ff_imp: Impl, m_sm: list, m_dm: list, 
-    fcnc_hadron: str, flavor_index: list, qsq, theta1, dm_mode=1
+    fcnc_hadron: str, flavor_index: list, qsq, dm_mode=1
 ):
     wc_S = wcs['L_S_dchi2'][*flavor_index]
     wc_P = wcs['L_P_dchi2'][*flavor_index]
@@ -61,5 +61,5 @@ def partial_width_3_1_1(
     ffs = ff_imp.get_central_values(qsq)
 
     amp_square = AMP_SQUARE_MAP.get((fcnc_hadron, dm_mode))
-    f_phase_space = ps.three_body_phase_space_factor(m_IS, m_dm_1, m_dm_2, m_FS, np.sqrt(qsq), theta1)
-    return f_phase_space * amp_square(wcs_dict, ffs, m_iq, m_fq, m_IS, m_FS, m_dm_1, m_dm_2, qsq, theta1)
+    f_phase_space = ps.three_body_phase_space_factor(m_IS, m_dm_1, m_dm_2, m_FS, np.sqrt(qsq))
+    return f_phase_space * amp_square(wcs_dict, ffs, m_iq, m_fq, m_IS, m_FS, m_dm_1, m_dm_2, qsq)
