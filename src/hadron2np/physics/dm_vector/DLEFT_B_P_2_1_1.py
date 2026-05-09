@@ -14,9 +14,9 @@ def amp_square_2_1_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_FS, m_dm1) -> flo
 
     # 初始化 4x4 = 16 个振幅平方项
     # 注意：此处公式需要根据具体物理过程填充，目前设为 0
-    ampSq1_1=wc_V*wc_V.conjugate()*np.power(m_dm1,-2)*np.power(FFfp,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq1_1 = wc_V*wc_V.conjugate()*np.power(m_dm1,-2)*np.power(FFfp,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq1_2 = 0
-    ampSq1_3=2.*wc_T*wc_V.conjugate()*FFfp*FFft*np.power(m_FS + m_IS,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq1_3 = 2.*wc_T*wc_V.conjugate()*FFfp*FFft*np.power(m_FS + m_IS,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq1_4 = 0
 
     ampSq2_1 = 0
@@ -24,9 +24,9 @@ def amp_square_2_1_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_FS, m_dm1) -> flo
     ampSq2_3 = 0
     ampSq2_4 = 0
 
-    ampSq3_1=2.*wc_T.conjugate()*wc_V*FFfp*FFft*np.power(m_FS + m_IS,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq3_1 = 2.*wc_T.conjugate()*wc_V*FFfp*FFft*np.power(m_FS + m_IS,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq3_2 = 0
-    ampSq3_3=4.*wc_T*wc_T.conjugate()*np.power(m_dm1,2)*np.power(m_FS + m_IS,-2)*np.power(FFft,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq3_3 = 4.*wc_T*wc_T.conjugate()*np.power(m_dm1,2)*np.power(m_FS + m_IS,-2)*np.power(FFft,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq3_4 = 0
 
     ampSq4_1 = 0

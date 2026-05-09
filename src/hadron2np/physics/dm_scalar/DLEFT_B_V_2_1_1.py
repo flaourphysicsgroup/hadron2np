@@ -25,9 +25,9 @@ def amp_square_2_1_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_FS, m_dm1) -> flo
     ampSq1_4 = 0
 
     ampSq2_1 = 0
-    ampSq2_2=wc_P*wc_P.conjugate()*np.power(m_fq + m_iq,-2)*np.power(FFA0,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq2_2 = wc_P*wc_P.conjugate()*np.power(m_fq + m_iq,-2)*np.power(FFA0,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq2_3 = 0
-    ampSq2_4=-0.5*wc_A*wc_P.conjugate()*FFA0*(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3)*np.power(m_FS,-1)*np.power(m_fq + m_iq,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq2_4 = -0.5*wc_A*wc_P.conjugate()*FFA0*(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3)*np.power(m_FS,-1)*np.power(m_fq + m_iq,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
 
     ampSq3_1 = 0
     ampSq3_2 = 0
@@ -35,9 +35,9 @@ def amp_square_2_1_1(wcs: dict, ffs: dict, m_iq, m_fq, m_IS, m_FS, m_dm1) -> flo
     ampSq3_4 = 0
 
     ampSq4_1 = 0
-    ampSq4_2=-0.5*wc_A.conjugate()*wc_P*FFA0*(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3)*np.power(m_FS,-1)*np.power(m_fq + m_iq,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq4_2 = -0.5*wc_A.conjugate()*wc_P*FFA0*(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3)*np.power(m_FS,-1)*np.power(m_fq + m_iq,-1)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
     ampSq4_3 = 0
-    ampSq4_4=0.25*wc_A*wc_A.conjugate()*np.power(m_FS,-2)*np.power(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
+    ampSq4_4 = 0.25*wc_A*wc_A.conjugate()*np.power(m_FS,-2)*np.power(2.*m_FS*FFA0 + (m_FS + m_IS)*FFA1 + m_FS*FFA2 -m_IS*FFA2 - 2.*m_FS*FFA3,2)*(np.power(m_dm1,4) - 2.*np.power(m_dm1,2)*(np.power(m_FS,2) + np.power(m_IS,2)) + np.power(np.power(m_FS,2) -np.power(m_IS,2),2))
 
     # 返回16个元素和的实部
     return (

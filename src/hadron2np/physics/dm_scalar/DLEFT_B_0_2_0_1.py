@@ -11,9 +11,9 @@ def amp_square_2_0_1(wcs: dict, f_B, m_iq, m_fq, m_IS, m_dm1, m_dm2) -> float:
     ampSq1_4 = 0
 
     ampSq2_1 = 0
-    ampSq2_2=4.*wc_P*wc_P.conjugate()*np.power(f_B,2)*np.power(m_fq + m_iq,-2)*np.power(m_IS,4)
+    ampSq2_2 = 4.*wc_P*wc_P.conjugate()*np.power(f_B,2)*np.power(m_fq + m_iq,-2)*np.power(m_IS,4)
     ampSq2_3 = 0
-    ampSq2_4=4.*1j*wc_A*wc_P.conjugate()*np.power(f_B,2)*(np.power(m_dm1,2) -np.power(m_dm2,2))*np.power(m_fq + m_iq,-1)*np.power(m_IS,2)
+    ampSq2_4 = 4.*1j*wc_A*wc_P.conjugate()*np.power(f_B,2)*(np.power(m_dm1,2) -np.power(m_dm2,2))*np.power(m_fq + m_iq,-1)*np.power(m_IS,2)
 
     ampSq3_1 = 0
     ampSq3_2 = 0
@@ -21,9 +21,9 @@ def amp_square_2_0_1(wcs: dict, f_B, m_iq, m_fq, m_IS, m_dm1, m_dm2) -> float:
     ampSq3_4 = 0
 
     ampSq4_1 = 0
-    ampSq4_2=-4.*1j*wc_A.conjugate()*wc_P*np.power(f_B,2)*(np.power(m_dm1,2) -np.power(m_dm2,2))*np.power(m_fq + m_iq,-1)*np.power(m_IS,2)
+    ampSq4_2 = -4.*1j*wc_A.conjugate()*wc_P*np.power(f_B,2)*(np.power(m_dm1,2) -np.power(m_dm2,2))*np.power(m_fq + m_iq,-1)*np.power(m_IS,2)
     ampSq4_3 = 0
-    ampSq4_4=4.*wc_A*wc_A.conjugate()*np.power(f_B,2)*np.power(np.power(m_dm1,2) -np.power(m_dm2,2),2)
+    ampSq4_4 = 4.*wc_A*wc_A.conjugate()*np.power(f_B,2)*np.power(np.power(m_dm1,2) -np.power(m_dm2,2),2)
 
     # 返回16个元素和的实部
     return (

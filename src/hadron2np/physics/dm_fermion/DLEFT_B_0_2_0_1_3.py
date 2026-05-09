@@ -12,7 +12,7 @@ def amp_square_2_0_1(wcs: dict, f_B, m_iq, m_fq, m_IS, m_dm1, m_dm2) -> float:
     ampSq1_3 = 0
 
     ampSq2_1 = 0
-    ampSq2_2=4.*wc_P*wc_P.conjugate()*np.power(f_B,2)*np.power(m_fq + m_iq,-2)*(-1.*np.power(m_dm1,2) -np.power(m_dm2,2) + np.power(m_IS,2))*np.power(m_IS,4)
+    ampSq2_2 = 4.*wc_P*wc_P.conjugate()*np.power(f_B,2)*np.power(m_fq + m_iq,-2)*(-1.*np.power(m_dm1,2) -np.power(m_dm2,2) + np.power(m_IS,2))*np.power(m_IS,4)
     ampSq2_3 = 0
 
     ampSq3_1 = 0
