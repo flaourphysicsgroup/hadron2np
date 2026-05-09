@@ -70,7 +70,7 @@ def width_2_1_1(
             amp_square = amp_square_B_V_2_1_1
         # case 'K->P':
         #     amp_square = amp_square_K_V_2_1_1
-        # case 'Lambdab->Lambda':
+        # case 'Lambda_b->Lambda':
         #     amp_square = amp_square_Lb_L_2_1_1
         case _:
             raise NotImplementedError(f'Decay process not implementd yet: {fcnc_hadron}')
@@ -113,7 +113,7 @@ def partial_width_3_1_1(
             amp_square = amp_square_B_V_3_1_1
         # case 'K->P':
         #     amp_square = amp_square_K_P_3_1_1
-        case 'Lambdab->Lambda':
+        case 'Lambda_b->Lambda':
             amp_square = amp_square_Lb_L_3_1_1
         case _:
             raise NotImplementedError(f'Decay process not implementd yet: {fcnc_hadron}')

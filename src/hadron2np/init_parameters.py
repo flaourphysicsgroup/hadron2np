@@ -64,7 +64,7 @@ def ff_function(function, process):
 
 _processes = {'b_p': ['B->pi', 'B->K', 'B->eta'],
               'b_v': ['B->rho', 'Bs->K*', 'B->K*', 'B->omega', 'Bs->phi'],
-              'Lambdab_Lambda': ['Lambdab->Lambda']}
+              'Lambda_b_Lambda': ['Lambda_b->Lambda']}
 for _k, _ps in _processes.items():
     for _p in _ps:
         q_name = _p + ' form factors'
@@ -79,7 +79,7 @@ for _k, _ps in _processes.items():
                                  function=ff_function(function=bv_pole_0412079.ff, process=_p),
                                  arguments=['q2', ])
             q.add_implementation(imp)
-        elif _k == 'Lambdab_Lambda':
+        elif _k == 'Lambda_b_Lambda':
             imp = Implementation(name='default', quantity=q_name,
                                  function=lambda wc, par, q2: Lambda_b2Lambda.ffs_two_order(q2),
                                  arguments=['q2', ])

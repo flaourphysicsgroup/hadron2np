@@ -1,13 +1,13 @@
 # processName: [fcnc_quark, tex_symbol, class]
 
-# class: ['B->0', 'B->P', 'B->V', 'K->0', 'K->P', 'Lambdab->Lambda', 'Upsilon->0', 'Jpsi->0']
+# class: ['B->0', 'B->P', 'B->V', 'K->0', 'K->P', 'Lambda_b->Lambda', 'Upsilon->0', 'Jpsi->0']
 
 # quark level: b->s
 Bs->0: ['b->s', 'B_s \to ', 'B->0']
 B->K: ['b->s', 'B^+ \to K^+', 'B->P']
 B->K*: ['b->s', 'B^+ \to K^{*+}', 'B->V']
 
-Lambdab->Lambda: ['b->s', '\Lambda_b\to \Lambda', 'Lambdab->Lambda']
+Lambda_b->Lambda: ['b->s', '\Lambda_b\to \Lambda', 'Lambda_b->Lambda']
 
 # quark level: b->d
 Bd->0: ['b->d', 'B_0 \to ', 'B->0']

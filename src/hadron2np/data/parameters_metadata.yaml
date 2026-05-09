@@ -163,6 +163,6 @@ parameter_groups:
     members: [f+, f0, fT]
   
   # Lambda_b->Lambda 形状因子
-  Lambdab->Lambda form factors:
+  Lambda_b->Lambda form factors:
     description: $\Lambda_b \to \Lambda$ form factors
     members: [f0, f+, fp, g0, g+, gp, h+, hp, h~+, h~p]

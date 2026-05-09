@@ -88,8 +88,8 @@ class DecayProcessBase():
             return hadron2np.config['scales']['B Decays']
         elif 'K' in self.IS:
             return hadron2np.config['scales']['K Decays']
-        elif 'Lambdab' in self.IS:
-            return hadron2np.config['scales']['Lambdab Decays']
+        elif 'Lambda_b' in self.IS:
+            return hadron2np.config['scales']['Lambda_b Decays']
 
     @staticmethod
     def get_nf(scale):

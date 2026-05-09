@@ -30,9 +30,9 @@ AMP_SQUARE_MAP = {
     ('B->V', 1): amp_square_B_V_3_1_1_1,
     ('B->V', 2): amp_square_B_V_3_1_1_2,
     ('B->V', 3): amp_square_B_V_3_1_1_3,
-    ('Lambdab->Lambda', 1): amp_square_Lb_L_3_1_1_1,
-    ('Lambdab->Lambda', 2): amp_square_Lb_L_3_1_1_2,
-    ('Lambdab->Lambda', 3): amp_square_Lb_L_3_1_1_3,
+    ('Lambda_b->Lambda', 1): amp_square_Lb_L_3_1_1_1,
+    ('Lambda_b->Lambda', 2): amp_square_Lb_L_3_1_1_2,
+    ('Lambda_b->Lambda', 3): amp_square_Lb_L_3_1_1_3,
 }
 
 
