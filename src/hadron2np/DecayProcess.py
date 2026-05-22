@@ -1,5 +1,5 @@
 import hadron2np
-from hadron2np.physics import dm_scalar, dm_fermion, dm_vector
+from hadron2np.physics import dm_scalar, dm_fermion, dm_vector, sm_invisible
 from hadron2np.DLEFT import get_zero_wcs, convert_to_SP_basis
 from scipy import integrate
 from wilson.util import qcd
@@ -73,14 +73,17 @@ class DecayProcessBase():
         return f'DecayProcess({self.name}) caused by: {self.fcnc_quark}'
 
     def confirm_final_state(self) -> bool:
-        if self.dm_name == 'phi':
-            self.analytic_dir = dm_scalar
-        elif self.dm_name == 'X':
-            self.analytic_dir = dm_vector
-        elif self.dm_name == 'chi':
-            self.analytic_dir = dm_fermion
-        else:
-            return False
+        match self.dm_name:
+            case 'phi':
+                self.analytic_dir = dm_scalar
+            case 'X':
+                self.analytic_dir = dm_vector
+            case 'chi':
+                self.analytic_dir = dm_fermion
+            case 'nu':
+                self.analytic_dir = sm_invisible
+            case _:
+                return False
         return True
 
     def get_decay_energy_scale(self):
@@ -219,6 +222,15 @@ class ThreeBodyDecayProcess(DecayProcessBase):
         self.set_dm_masses(m_dm)
         if (self.FS == '0') or (len(self.dms) < 2):
             raise ValueError(f'物理意义不明确: {self.name} 微分宽度.')
+        elif self.dm_name == 'nu':
+            # 标准模型过程直接返回
+            bare_dWidth = self.analytic_dir.partial_width_3_1_1(
+                self._formfactor,
+                self.m_sm,
+                f'{self.IS}->{self.FS}',
+                qsq,
+            )
+            return bare_dWidth
         else:
             bare_dWidth = self.analytic_dir.partial_width_3_1_1(
                 self.wcs,
@@ -232,7 +244,7 @@ class ThreeBodyDecayProcess(DecayProcessBase):
             )
         CG_factor = 1  # 考虑中性的 pi0 中会有一个 sqrt(2)
         dm_factor = 1  # 考虑末态两个 phi 相同时的全同性
-        if self.FS == 'pi0':
+        if self.FS in ['pi0', 'rho0']:
             CG_factor = 1 / 2.0
         if self.index[2] == self.index[3]:
             dm_factor = 1 / 2.0
