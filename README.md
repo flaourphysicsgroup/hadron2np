@@ -3,62 +3,64 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)](https://www.python.org/downloads/)
 
-重味强子衰变到暗物质过程中物理观测量的数值计算框架。
+[中文文档](README_zh.md)
 
-## 项目简介
+Numerical computation framework for physical observables in heavy-flavor hadron decays to dark matter.
 
-Hadron2NP 用于计算重味强子（B 介子、K 介子、$\Lambda_b$ 重子等）衰变到暗物质过程中的衰变宽度与分支比等观测量。
+## Overview
 
-理论框架基于暗物质低能有效场论（DLEFT），后续将扩展支持其他简化模型。
+Hadron2NP computes decay widths and branching ratios for processes where heavy-flavor hadrons (B mesons, K mesons, $\Lambda_b$ baryons, etc.) decay into dark matter particles.
 
-支持的暗物质类型：
+The theoretical framework is based on Dark Matter Low-Energy Effective Field Theory (DLEFT), with plans to extend support to other simplified models.
 
-| 符号 | 类型 | 说明 |
-|------|------|------|
-| `phi` | 标量型（Scalar） | 自旋为 0 的暗物质粒子 |
-| `X` | 矢量型（Vector） | 自旋为 1 的暗物质粒子 |
-| `chi` | 费米型（Fermion） | 自旋为 1/2 的暗物质粒子 |
-| — | 类轴子型（ALP） | 规划中 |
+Supported dark matter types:
 
-支持的衰变过程类型：
+| Symbol | Type | Description |
+|--------|------|-------------|
+| `phi` | Scalar | Spin-0 dark matter particle |
+| `X` | Vector | Spin-1 dark matter particle |
+| `chi` | Fermion | Spin-1/2 dark matter particle |
+| — | ALP | Planned |
 
-- **两体衰变**：$H_1 \to H_2 + \text{DM}$，$H \to \text{DM}\,\text{DM}$
-- **三体衰变**：$H_1 \to H_2 + \text{DM}\,\text{DM}$
+Supported decay process types:
 
-其中 $H_1$, $H_2$ 为强子态，DM 为暗物质粒子。已实现的强子跃迁包括 $\Lambda_b \to \Lambda$、$B \to K$、$B \to \pi$、$B_s \to \text{inv}$ 等。
+- **Two-body decays**: $H_1 \to H_2 + \text{DM}$, $H \to \text{DM}\,\text{DM}$
+- **Three-body decays**: $H_1 \to H_2 + \text{DM}\,\text{DM}$
 
-## 安装
+where $H_1$, $H_2$ are hadron states and DM denotes dark matter particles. Implemented hadronic transitions include $\Lambda_b \to \Lambda$, $B \to K$, $B \to \pi$, $B_s \to \text{inv}$, etc.
 
-### 环境要求
+## Installation
+
+### Requirements
 
 - Python >= 3.14
-- [uv](https://docs.astral.sh/uv/)（推荐的 Python 包管理器）
+- [uv](https://docs.astral.sh/uv/) (recommended Python package manager)
 
-### 从源码安装
-在一个空目录 `workspace/` 下，克隆 `form-factor` 和 `hadron2np` 两个仓库。
-然后使用 uv 新建一个项目目录。相应的终端命令如下：
+### From source
+In an empty directory `workspace/`, clone both the `form-factor` and `hadron2np` repositories, then use uv to create a new project:
 
 ```bash
 cd workspace
-git clone https://gitee.com/flaour-physics-group/form-factor.git
-git clone https://gitee.com/flaour-physics-group/hadron2np.git
+git clone https://github.com/FlaourPhysicsGroup/form-factor.git
+git clone https://github.com/FlaourPhysicsGroup/hadron2np.git
 
 uv init my-new-project && cd my-new-project
 uv add ../form-factor
 uv add ../hadron2np
 ```
 
-
-### 从 PyPI 安装（即将支持）
+### From PyPI (coming soon)
 
 ```bash
 uv pip install hadron2np
 ```
 
-## 快速上手
+## Quick Start
 
-### 基本使用
-在 `workspace/my-new-project/` 目录下，新建一个 python 脚本，将以下内容写入后运行。
+### Basic usage
+
+In the `workspace/my-new-project/` directory, create a Python script with the following content and run it:
+
 ```python
 import hadron2np
 import numpy as np
@@ -66,38 +68,38 @@ import numpy as np
 print(hadron2np.parameters_dict)
 ```
 
-### 计算衰变宽度与分支比
+### Computing decay widths and branching ratios
 
 ```python
 import hadron2np
 
-# 创建衰变过程: Lambda_b -> Lambda + phi (标量暗物质)
+# Create decay process: Lambda_b -> Lambda + phi (scalar dark matter)
 process = hadron2np.new_decay_process(
     ['Lambdab', 'Lambda', 'phi'],
     basis='DLEFT(S/P)'
 )
 
-# 设定 Wilson 系数与暗物质质量 (单位: GeV)
+# Set dark matter mass (unit: GeV)
 m_dm = [0.1, 0.1]
 
-# 设定 Wilson 系数值，每个Wilson系数在味空间中对应一个四维矩阵
+# Set Wilson coefficients; each coefficient corresponds to a 4D matrix in flavor space
 wc_S_dphi = np.zeros((3, 3, 2, 2), dtype=complex)
 wc_S_dphi[*process.index] = 0.5 + 3j
 wcs = {'L_S_dphi': wc_S_dphi}
 
-# 计算衰变宽度
+# Compute decay width
 width = process.width(wcs, m_dm)
 
-# 计算分支比
+# Compute branching ratio
 br = process.branching_ratio(wcs, m_dm)
 ```
 
-### 三体衰变的微分分布
+### Differential distributions for three-body decays
 
 ```python
 import hadron2np
 
-# 创建三体衰变过程: Lambda_b -> Lambda + chi chi (费米暗物质)
+# Create three-body decay process: Lambda_b -> Lambda + chi chi (fermion dark matter)
 process = hadron2np.new_decay_process(
     ['Lambdab', 'Lambda', 'chi', 'chi'],
     basis='DLEFT(S/P)'
@@ -108,15 +110,15 @@ wc_S_dphi = np.zeros((3, 3, 2, 2), dtype=complex)
 wc_S_dphi[*process.index] = 0.5 + 3j
 wcs = {'L_S_dphi': wc_S_dphi}
 
-# 计算 dGamma/dq^2
+# Compute dGamma/dq^2
 qsq = 1.0  # GeV^2
 dwidth = process.dWidth_over_dqsq(wcs, m_dm, qsq)
 ```
 
-### 粒子命名规则
+### Particle naming conventions
 
-| 粒子 | 代码名称 |
-|------|----------|
+| Particle | Code name |
+|----------|-----------|
 | $\Lambda_b$ | `Lambdab` |
 | $\Lambda$ | `Lambda` |
 | $B^+$ | `B+` |
@@ -124,47 +126,47 @@ dwidth = process.dWidth_over_dqsq(wcs, m_dm, qsq)
 | $K^+$ | `K+` |
 | $\pi^0$ | `pi0` |
 
-暗物质粒子使用 `phi`（标量）、`X`（矢量）、`chi`（费米子）。
+Dark matter particles use `phi` (scalar), `X` (vector), `chi` (fermion).
 
-## 依赖项
+## Dependencies
 
-| 包名 | 用途 |
-|------|------|
-| [flavio](https://flav-io.github.io/) | 味物理唯象计算 |
-| [wilson](https://wilson-eft.github.io/wilson/) | Wilson 系数跑动与匹配 |
-| [particle](https://github.com/scikit-hep/particle) | PDG 粒子数据 |
-| [hepunits](https://github.com/scikit-hep/hepunits) | 高能物理单位换算 |
-| [scipy](https://scipy.org/) | 数值积分 |
-| [matplotlib](https://matplotlib.org/) | 绘图 |
-| [hmff](https://gitee.com/flaour-physics-group) | 强子形状因子 |
+| Package | Purpose |
+|---------|---------|
+| [flavio](https://flav-io.github.io/) | Flavor physics phenomenology |
+| [wilson](https://wilson-eft.github.io/wilson/) | Wilson coefficient running and matching |
+| [particle](https://github.com/scikit-hep/particle) | PDG particle data |
+| [hepunits](https://github.com/scikit-hep/hepunits) | HEP unit conversions |
+| [scipy](https://scipy.org/) | Numerical integration |
+| [matplotlib](https://matplotlib.org/) | Plotting |
+| [hmff](https://gitee.com/flaour-physics-group) | Hadronic form factors |
 
-## 项目结构
+## Project structure
 
 ```
 hadron2np/
 ├── src/hadron2np/
-│   ├── DecayProcess.py        # 衰变过程核心类
-│   ├── classes.py             # 参数管理基础设施
-│   ├── DLEFT/                 # Wilson 系数定义与基矢变换
-│   ├── FormFactor/            # 强子形状因子实现
-│   ├── physics/               # 不同暗物质类型的解析表达式
-│   │   ├── dm_scalar/         # 标量暗物质
-│   │   ├── dm_vector/         # 矢量暗物质
-│   │   └── dm_fermion/        # 费米暗物质
-│   └── data/                  # 物理参数与配置文件
-├── tests/                     # 测试
+│   ├── DecayProcess.py        # Core decay process classes
+│   ├── classes.py             # Parameter management infrastructure
+│   ├── DLEFT/                 # Wilson coefficient definitions and basis transformations
+│   ├── FormFactor/            # Hadronic form factor implementations
+│   ├── physics/               # Analytic expressions for different DM types
+│   │   ├── dm_scalar/         # Scalar dark matter
+│   │   ├── dm_vector/         # Vector dark matter
+│   │   └── dm_fermion/        # Fermion dark matter
+│   └── data/                  # Physics parameters and config files
+├── tests/                     # Tests
 └── pyproject.toml
 ```
 
-## 开源协议
+## License
 
-本项目基于 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 发布。
+This project is released under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
 
-## 引用
+## Citation
 
-如果本项目对您的研究有帮助，请考虑引用相关工作。
+If this project is helpful for your research, please consider citing the relevant publications.
 
-## 链接
+## Links
 
-- 项目主页：<https://gitee.com/flaour-physics-group/hadron2np>
-- 问题反馈：<https://gitee.com/flaour-physics-group/hadron2np/issues>
+- Project page: <https://gitee.com/flaour-physics-group/hadron2np>
+- Issue tracker: <https://gitee.com/flaour-physics-group/hadron2np/issues>
