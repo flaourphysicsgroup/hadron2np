@@ -5,6 +5,7 @@ from .DLEFT_B_P_2_1_1 import amp_square_2_1_1 as amp_square_B_P_2_1_1
 from .DLEFT_B_P_3_1_1 import amp_square_3_1_1 as amp_square_B_P_3_1_1
 from .DLEFT_B_V_2_1_1 import amp_square_2_1_1 as amp_square_B_V_2_1_1
 from .DLEFT_B_V_3_1_1 import amp_square_3_1_1 as amp_square_B_V_3_1_1
+from .DLEFT_Lb_L_2_1_1 import amp_square_2_1_1 as amp_square_Lb_L_2_1_1
 from .DLEFT_Lb_L_3_1_1 import amp_square_3_1_1 as amp_square_Lb_L_3_1_1
 
 from hadron2np import Phase_space_factors as ps
@@ -55,8 +56,8 @@ def width_2_1_1(
             amp_square = amp_square_B_V_2_1_1
         # case 'K->P':
         #     amp_square = amp_square_K_V_2_1_1
-        # case 'Lambda_b->Lambda':
-        #     amp_square = amp_square_Lb_L_2_1_1
+        case 'Lambda_b->Lambda':
+            amp_square = amp_square_Lb_L_2_1_1
         case _:
             raise NotImplementedError(f'Decay process not implementd yet: {fcnc_hadron}')
 

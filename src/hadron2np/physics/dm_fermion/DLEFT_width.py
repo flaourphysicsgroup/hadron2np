@@ -42,12 +42,11 @@ def width_2_0_1(wcs: dict, f_B: float, m_sm: list, m_dm: list, fcnc_hadron: str,
     wc_V = wcs['L_V_dchi2'][*flavor_index]
     wc_A = wcs['L_A_dchi2'][*flavor_index]
     wc_T = wcs['L_T_dchi2'][*flavor_index]
-    wc_T5 = wcs['L_T5_dchi2'][*flavor_index]
-    wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T, 'T5': wc_T5}
+    wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T}
     m_dm_1, m_dm_2 = m_dm
     m_IS, _, m_iq, m_fq = m_sm
 
-    amp_square = AMP_SQUARE_MAP.get((fcnc_hadron, dm_mode))
+    amp_square = AMP_SQUARE_MAP[(fcnc_hadron, dm_mode)]
     f_phase_space = ps.two_body_phase_space_factor(m_IS, m_dm_1, m_dm_2)
     return f_phase_space * amp_square(wcs_dict, f_B, m_iq, m_fq, m_IS, m_dm_1, m_dm_2)
 
@@ -61,12 +60,11 @@ def partial_width_3_1_1(
     wc_V = wcs['L_V_dchi2'][*flavor_index]
     wc_A = wcs['L_A_dchi2'][*flavor_index]
     wc_T = wcs['L_T_dchi2'][*flavor_index]
-    wc_T5 = wcs['L_T5_dchi2'][*flavor_index]
-    wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T, 'T5': wc_T5}
+    wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T}
     m_dm_1, m_dm_2 = m_dm
     m_IS, m_FS, m_iq, m_fq = m_sm
     ffs = ff_imp.get_central_values(qsq)
 
-    amp_square = AMP_SQUARE_MAP.get((fcnc_hadron, dm_mode))
+    amp_square = AMP_SQUARE_MAP[(fcnc_hadron, dm_mode)]
     f_phase_space = ps.three_body_phase_space_factor(m_IS, m_dm_1, m_dm_2, m_FS, np.sqrt(qsq))
     return f_phase_space * amp_square(wcs_dict, ffs, m_iq, m_fq, m_IS, m_FS, m_dm_1, m_dm_2, qsq)

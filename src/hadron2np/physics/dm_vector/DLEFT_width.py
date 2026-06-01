@@ -5,6 +5,7 @@ from .DLEFT_B_P_2_1_1 import amp_square_2_1_1 as amp_square_B_P_2_1_1
 from .DLEFT_B_P_3_1_1 import amp_square_3_1_1 as amp_square_B_P_3_1_1
 from .DLEFT_B_V_2_1_1 import amp_square_2_1_1 as amp_square_B_V_2_1_1
 from .DLEFT_B_V_3_1_1 import amp_square_3_1_1 as amp_square_B_V_3_1_1
+from .DLEFT_Lb_L_2_1_1 import amp_square_2_1_1 as amp_square_Lb_L_2_1_1
 from .DLEFT_Lb_L_3_1_1 import amp_square_3_1_1 as amp_square_Lb_L_3_1_1
 
 from hadron2np import Phase_space_factors as ps
@@ -15,21 +16,29 @@ from hmff.classes import Impl
 def width_2_0_1(wcs: dict, f_B: float, m_sm: list, m_dm: list, fcnc_hadron: str, flavor_index: list):
     wc_S = wcs['L_S_dX2'][*flavor_index]
     wc_P = wcs['L_P_dX2'][*flavor_index]
-    wc_V = wcs['L_V_dX2'][*flavor_index]
-    wc_A = wcs['L_A_dX2'][*flavor_index]
     wc_T = wcs['L_T_dX2'][*flavor_index]
     wc_T5 = wcs['L_T5_dX2'][*flavor_index]
-    wc_V_tilde = wcs['L_Vtilde_dX2'][*flavor_index]
-    wc_A_tilde = wcs['L_Atilde_dX2'][*flavor_index]
     wc_V_partial = wcs['L_Vpartial_dX2'][*flavor_index]
-    wc_A_partial = wcs['L_Ppartial_dX2'][*flavor_index]
+    wc_A_partial = wcs['L_Apartial_dX2'][*flavor_index]
 
-    # TODO： 修复这里的味指标问题
-    wc_V_21 = wcs['L_V_21_dX2'][*flavor_index]
-    wc_A_21 = wcs['L_A_21_dX2'][*flavor_index]
-    wc_V_tilde_21 = wcs['L_Vtilde_21_dX2'][*flavor_index]
-    wc_A_tilde_21 = wcs['L_Atilde_21_dX2'][*flavor_index]
-
+    if flavor_index[2:] == [0, 1]:
+        wc_V = wcs['L_V_dX2'][*flavor_index]
+        wc_A = wcs['L_A_dX2'][*flavor_index]
+        wc_V_tilde = wcs['L_Vtilde_dX2'][*flavor_index]
+        wc_A_tilde = wcs['L_Atilde_dX2'][*flavor_index]
+        wc_V_21 = 0
+        wc_A_21 = 0
+        wc_V_tilde_21 = 0
+        wc_A_tilde_21 = 0
+    else:
+        wc_V = 0
+        wc_A = 0
+        wc_V_tilde = 0
+        wc_A_tilde = 0
+        wc_V_21 = wcs['L_V_dX2'][*flavor_index]
+        wc_A_21 = wcs['L_A_dX2'][*flavor_index]
+        wc_V_tilde_21 = wcs['L_Vtilde_dX2'][*flavor_index]
+        wc_A_tilde_21 = wcs['L_Atilde_dX2'][*flavor_index]
     wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T, 'T5': wc_T5, 'V_tilde': wc_V_tilde,
                 'A_tilde': wc_A_tilde, 'V_partial': wc_V_partial, 'A_partial': wc_A_partial,
                 'V_21': wc_V_21, 'A_21': wc_A_21, 'V_tilde_21': wc_V_tilde_21, 'A_tilde_21': wc_A_tilde_21}
@@ -70,8 +79,8 @@ def width_2_1_1(
             amp_square = amp_square_B_V_2_1_1
         # case 'K->P':
         #     amp_square = amp_square_K_V_2_1_1
-        # case 'Lambda_b->Lambda':
-        #     amp_square = amp_square_Lb_L_2_1_1
+        case 'Lambda_b->Lambda':
+            amp_square = amp_square_Lb_L_2_1_1
         case _:
             raise NotImplementedError(f'Decay process not implementd yet: {fcnc_hadron}')
 
@@ -84,20 +93,29 @@ def partial_width_3_1_1(
 ):
     wc_S = wcs['L_S_dX2'][*flavor_index]
     wc_P = wcs['L_P_dX2'][*flavor_index]
-    wc_V = wcs['L_V_dX2'][*flavor_index]
-    wc_A = wcs['L_A_dX2'][*flavor_index]
     wc_T = wcs['L_T_dX2'][*flavor_index]
     wc_T5 = wcs['L_T5_dX2'][*flavor_index]
-    wc_V_tilde = wcs['L_Vtilde_dX2'][*flavor_index]
-    wc_A_tilde = wcs['L_Atilde_dX2'][*flavor_index]
     wc_V_partial = wcs['L_Vpartial_dX2'][*flavor_index]
-    wc_A_partial = wcs['L_Ppartial_dX2'][*flavor_index]
+    wc_A_partial = wcs['L_Apartial_dX2'][*flavor_index]
 
-    # TODO： 修复这里的味指标问题
-    wc_V_21 = wcs['L_V_21_dX2'][*flavor_index]
-    wc_A_21 = wcs['L_A_21_dX2'][*flavor_index]
-    wc_V_tilde_21 = wcs['L_Vtilde_21_dX2'][*flavor_index]
-    wc_A_tilde_21 = wcs['L_Atilde_21_dX2'][*flavor_index]
+    if flavor_index[2:] == [0, 1]:
+        wc_V = wcs['L_V_dX2'][*flavor_index]
+        wc_A = wcs['L_A_dX2'][*flavor_index]
+        wc_V_tilde = wcs['L_Vtilde_dX2'][*flavor_index]
+        wc_A_tilde = wcs['L_Atilde_dX2'][*flavor_index]
+        wc_V_21 = 0
+        wc_A_21 = 0
+        wc_V_tilde_21 = 0
+        wc_A_tilde_21 = 0
+    else:
+        wc_V = 0
+        wc_A = 0
+        wc_V_tilde = 0
+        wc_A_tilde = 0
+        wc_V_21 = wcs['L_V_dX2'][*flavor_index]
+        wc_A_21 = wcs['L_A_dX2'][*flavor_index]
+        wc_V_tilde_21 = wcs['L_Vtilde_dX2'][*flavor_index]
+        wc_A_tilde_21 = wcs['L_Atilde_dX2'][*flavor_index]
 
     wcs_dict = {'S': wc_S, 'P': wc_P, 'V': wc_V, 'A': wc_A, 'T': wc_T, 'T5': wc_T5, 'V_tilde': wc_V_tilde,
                 'A_tilde': wc_A_tilde, 'V_partial': wc_V_partial, 'A_partial': wc_A_partial,

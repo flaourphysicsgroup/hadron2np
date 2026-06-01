@@ -28,8 +28,9 @@ class TestBDecayProcessWidth:
         assert process.dms == ['phi']
         assert isinstance(process, hadron2np.TwoBodyDecayProcess)
         
-        # 两体衰变不需要Wilson系数
-        wcs = {}
+        wc_here = np.zeros((3, 3), dtype=complex)
+        wc_here[*process.index] = 0.5
+        wcs = {'L_S_dphi': wc_here}
         
         # 测试五组不同的暗物质质量
         m_dm_values = [
@@ -95,7 +96,6 @@ class TestBDecayProcessWidth:
 
     # ==================== 矢量暗物质 X ====================
     
-    @pytest.mark.skip(reason="矢量暗物质X的Wilson系数定义不完整,缺少L_Ppartial_dX2")
     def test_B_to_K_single_X(self, parameters):
         """测试 B+ -> K+ + X (单矢量暗物质)"""
         process = hadron2np.new_decay_process(
@@ -111,12 +111,13 @@ class TestBDecayProcessWidth:
         assert process.dms == ['X']
         assert isinstance(process, hadron2np.TwoBodyDecayProcess)
         
-        # 两体衰变不需要Wilson系数
-        wcs = {}
+        wc_here = np.zeros((3, 3), dtype=complex)
+        wc_here[*process.index] = 0.5
+        wcs = {'L_V_dX': wc_here}
         
         # 测试五组不同的暗物质质量
         m_dm_values = [
-            [0],              # 质量为零
+            [0.001],              # 质量为零
             [0.1],            # 质量非零
             [0.5],            # 质量较大
             [1.0],            # 质量更大
@@ -135,7 +136,7 @@ class TestBDecayProcessWidth:
             assert isinstance(br, (float, np.floating))
             assert br >= 0
 
-    @pytest.mark.skip(reason="矢量暗物质X的Wilson系数定义不完整,缺少L_Ppartial_dX2")
+
     def test_B_to_K_double_X(self, parameters):
         """测试 B+ -> K+ + X + X (双矢量暗物质)"""
         process = hadron2np.new_decay_process(
@@ -158,11 +159,11 @@ class TestBDecayProcessWidth:
         
         # 测试五组不同的暗物质质量
         m_dm_values = [
-            [0, 0],           # 质量相同且为零
             [0.1, 0.1],       # 质量相同且非零
             [0.5, 0.5],       # 质量相同且较大
             [0.1, 0.5],       # 质量不同
-            [0.2, 0.8]        # 质量不同且差异较大
+            [0.2, 0.8],        # 质量不同且差异较大
+            [1.0, 0.2]
         ]
         
         for m_dm in m_dm_values:
@@ -242,7 +243,7 @@ class TestBDecayProcessWidth:
         # 设置 Wilson 系数
         wc_here = np.zeros((3, 3, 2, 2), dtype=complex)
         wc_here[*process.index] = 0.5
-        wcs = {'L_S_dchi2': wc_here}
+        wcs = {'L_V_dchi2': wc_here}
         
         # 测试五组不同的暗物质质量
         m_dm_values = [

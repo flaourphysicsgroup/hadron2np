@@ -110,16 +110,18 @@ class DecayProcessBase():
         else:
             raise ValueError("Unexpected value: scale={}".format(scale))
 
-    def get_flavour_index(self) -> list:
+    def get_flavour_index(self) -> list[int]:
         """根据夸克层次的FCNC过程, 得到 Wilson 系数的味指标. 如 sbab: (1, 2, 0, 1)"""
         match_flavour_index = {'d': 0, 's': 1, 'b': 2}
         iq, fq = self.fcnc_quark.split('->')
         iq_index, fq_index = match_flavour_index[iq], match_flavour_index[fq]
 
         if len(self.dms) == 1:
-            return [fq_index, iq_index, 0, 0]  # b->s 衰变在夸克流中是 \bar{s} b, 指标应该是 1200
+            return [fq_index, iq_index]  # b->s 衰变在夸克流中是 \bar{s} b, 指标应该是 12
         elif len(self.dms) == 2:
             return [fq_index, iq_index, 0, 1]
+        else:
+            raise ValueError(f'Decay Process Error: {self.fcnc_quark}')
 
     def get_quark_running_mass(self, quark_name: str, scale: float):
         input_par = [self.par['m_' + quark_name], scale, self.get_nf(scale), self.par['alpha_s']]
@@ -186,8 +188,15 @@ class TwoBodyDecayProcess(DecayProcessBase):
     def width(self, wcs, m_dm) -> float:
         self.set_wcs(wcs)
         self.set_dm_masses(m_dm)
+        CG_factor = 1  # 考虑中性的 pi0 中会有一个 sqrt(2)
+        dm_factor = 1  # 考虑末态两个 phi 相同时的全同性
+        if self.FS == 'pi0':
+            CG_factor = 1 / 2.0
+
         if self.FS == '0':
             decay_constant = self.par['f_' + self.IS]
+            if self.index[2] == self.index[3]:
+                dm_factor = 1 / 2.0
             bare_width = self.analytic_dir.width_2_0_1(
                 self.wcs, decay_constant, self.m_sm, self.m_dm, self.fcnc_hadron_class, self.index
             )
@@ -198,12 +207,6 @@ class TwoBodyDecayProcess(DecayProcessBase):
         else:
             raise ValueError('两体衰变宽度计算错误: ' + self.name)
 
-        CG_factor = 1  # 考虑中性的 pi0 中会有一个 sqrt(2)
-        dm_factor = 1  # 考虑末态两个 phi 相同时的全同性
-        if self.FS == 'pi0':
-            CG_factor = 1 / 2.0
-        if self.index[2] == self.index[3]:
-            dm_factor = 1 / 2.0
         return bare_width * CG_factor * dm_factor
 
     def branching_ratio(self, wcs: dict, m_dm: list) -> float:
