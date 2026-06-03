@@ -3,6 +3,7 @@ import numpy as np
 import hadron2np
 from hadron2np.DecayProcess import SMDecayProcess
 
+LDLEFT_BASIS = 'DLEFT(L/R)'
 
 class TestBDecayProcessWidth:
     """测试 B 介子衰变过程及其宽度计算"""
@@ -18,7 +19,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + phi (单标量暗物质)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'phi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -58,7 +59,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + phi + phi (双标量暗物质)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'phi', 'phi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -101,7 +102,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + X (单矢量暗物质)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'X'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -142,7 +143,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + X + X (双矢量暗物质)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'X', 'X'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -185,7 +186,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + chi + chi (费米子暗物质 mode 1)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'chi', 'chi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -229,7 +230,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + chibar + chi (费米子暗物质 mode 2)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'chibar', 'chi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -273,7 +274,7 @@ class TestBDecayProcessWidth:
         """测试 B+ -> K+ + chibar + chibar (费米子暗物质 mode 3)"""
         process = hadron2np.new_decay_process(
             ['B+', 'K+', 'chibar', 'chibar'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LCSR-pole 2004'
         )
         
@@ -317,7 +318,7 @@ class TestBDecayProcessWidth:
         """特别测试 B+ -> K+ nu nu 标准模型过程"""
         process: SMDecayProcess = hadron2np.new_decay_process(
             ['B+', 'K+', 'nu', 'nu'], 
-            basis='DLEFT(S/P)', 
+            basis=LDLEFT_BASIS, 
             ff_imp='LCSR-pole 2004'
         )
         

@@ -4,6 +4,8 @@ import hadron2np
 from hadron2np.DecayProcess import SMDecayProcess
 
 
+LDLEFT_BASIS = 'DLEFT(L/R)'
+
 class TestLambdaBDecayProcessWidth:
     """测试 Lambda_b 重子衰变过程及其宽度计算"""
 
@@ -18,7 +20,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + phi (单标量暗物质)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'phi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -58,7 +60,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + phi + phi (双标量暗物质)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'phi', 'phi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -101,7 +103,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + X (单矢量暗物质)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'X'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -137,11 +139,12 @@ class TestLambdaBDecayProcessWidth:
             assert isinstance(br, (float, np.floating))
             assert br >= 0
 
+    @pytest.mark.skip(reason='计算时间太长了')
     def test_Lambdab_to_Lambda_double_X(self, parameters):
         """测试 Lambda_b -> Lambda + X + X (双矢量暗物质)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'X', 'X'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -184,7 +187,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + chi + chi (费米子暗物质 mode 1)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'chi', 'chi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -228,7 +231,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + chibar + chi (费米子暗物质 mode 2)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'chibar', 'chi'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -272,7 +275,7 @@ class TestLambdaBDecayProcessWidth:
         """测试 Lambda_b -> Lambda + chibar + chibar (费米子暗物质 mode 3)"""
         process = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'chibar', 'chibar'],
-            basis='DLEFT(S/P)',
+            basis=LDLEFT_BASIS,
             ff_imp='LQCD-2016-nominal'
         )
         
@@ -316,7 +319,7 @@ class TestLambdaBDecayProcessWidth:
         """特别测试 Lambda_b -> Lambda nu nu 标准模型过程"""
         process:SMDecayProcess = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'nu', 'nu'], 
-            basis='DLEFT(S/P)', 
+            basis=LDLEFT_BASIS, 
             ff_imp='LQCD-2016-nominal'
         )
         

@@ -63,3 +63,8 @@ members = [
 
 [tool.ruff.format]
 quote-style = "preserve"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]

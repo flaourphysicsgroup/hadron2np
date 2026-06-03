@@ -46,7 +46,7 @@ class DecayProcessBase():
         # 确认接口
         self.par = parameter
         # 目前只支持 DLEFT(S/P) 算符基
-        if basis == 'DLEFT(S/P)':
+        if basis in ['DLEFT(S/P)', 'DLEFT(L/R)']:
             self.basis = basis
         else:
             raise ValueError(f'{basis} 不是合法的算符基矢.')
