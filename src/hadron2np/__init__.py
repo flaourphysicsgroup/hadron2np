@@ -2,7 +2,7 @@ from .init_config import config
 from .init_parameters import parameters
 from .init_parameters import parameter_groups
 from .init_parameters import parameters_dict
-from .DecayProcess import TwoBodyDecayProcess, ThreeBodyDecayProcess, DecayProcessBase
+from .DecayProcess import TwoBodyDecayProcess, ThreeBodyDecayProcess, DecayProcessBase, SMDecayProcess
 
 
 def all_decay_processes():
@@ -28,6 +28,8 @@ def new_decay_process(particles: list, basis='DLEFT(L/R)', ff_imp=None) -> Decay
             return TwoBodyDecayProcess(particles, basis, ff_imp=ff_imp)
         case 4 if particles[1] == '0':
             return TwoBodyDecayProcess(particles, basis, ff_imp=ff_imp)
+        case 4 if particles[2] == 'nu':
+            return SMDecayProcess(particles, basis, ff_imp=ff_imp)
         case 4:
             return ThreeBodyDecayProcess(particles, basis, ff_imp=ff_imp)
 

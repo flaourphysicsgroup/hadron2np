@@ -4,128 +4,128 @@ r"""标准模型B介子衰变到强子+中微子的半单举过程。参考1111.
 """
 
 from hadron2np.Phase_space_factors import kallen
-import hadron2np
-from ckmutil import ckm
 import numpy as np
-from scipy import integrate
+from .Lb_Lvv import xi
 
 
-def xi(a, bc):
-    """CKM factor xi_a^bc = V_{ab} V_{ac}^*"""
-    par = hadron2np.parameters_dict
-    _q_dict_u = {'u': 0, 'c': 1, 't': 2}
-    _q_dict_d = {'d': 0, 's': 1, 'b': 2}
-    a_index = _q_dict_u[a]
-    b_index = _q_dict_d[bc[0]]
-    c_index = _q_dict_d[bc[1]]
-    v = ckm.ckm_tree(par['Vus'], par['Vub'], par['Vcb'], par['delta'])
-    return v[a_index, b_index] * v[a_index, c_index].conj()
+def _Gamma_SM_Bpirho(GF, f_IS, f_FS, m_IS, r_tau, tau_tau) -> float:
+    """一个固定的系数 For B+->pi+(rho+)vv"""
+    return (
+        m_IS**6
+        * r_tau**5
+        * f_IS**2
+        * f_FS**2
+        * abs(xi('u', 'bd')) ** 2
+        * GF**4
+        * tau_tau
+        / (64 * np.pi**2)
+    )
 
-def _dGamma_dz_pi(z, par):
+
+def _Gamma_SM_BK(GF, alpha, C_L_sbnunu, m_IS) -> float:
+    """一个固定的系数 For B+->K(*)+vv"""
+    return m_IS**5 * (GF * alpha * C_L_sbnunu * abs(xi('t', 'bs'))) ** 2 / (256 * np.pi**5)
+
+
+def _dGamma_dz_piPlus(GF, f_IS, f_FS, m_IS, m_FS, m_tau, tau_tau, z):
     """dGamma/dz(B+ -> pi+ v v)"""
-
-    m_B = par['m_B+']
-    r_tau = par['m_tau'] / m_B
-    r_pi = par['m_pi+'] / m_B
-
-    pre_factor = m_B ** 6 * r_tau ** 5 * par['f_B+'] ** 2 * par['f_pi+'] ** 2 * \
-                 abs(xi('u', 'bd')(par)) ** 2 * par['GF'] ** 4 * par['tau_tau'] / (64 * np.pi ** 2)
-    return pre_factor * ((1 - r_tau ** 2) * (1 - r_pi ** 2 / r_tau ** 2) - z)
-
-def partial_width_B_pi(ffs: dict, m_iq, m_fq, m_IS, m_FS, qsq):
-    par = hadron2np.parameters_dict
-    z = qsq / m_IS ** 2
-    par.update({'m_B+': m_IS, 'm_pi+': m_FS, 'tau_tau': 1/par['Gamma_tau']})
-    for k,v in par.items():
-        if k.startswith('f_'):
-            print(f"{k}: {v}")
-    return _dGamma_dz_pi(z, par)
+    r_tau = m_tau / m_IS
+    r_pi = m_FS / m_IS
+    gamma_SM = _Gamma_SM_Bpirho(GF, f_IS, f_FS, m_IS, r_tau, tau_tau)
+    return gamma_SM * ((1 - r_tau**2) * (1 - r_pi**2 / r_tau**2) - z)
 
 
-def BR_pi(wc_obj, par_dict):
-    """BR(B+ -> pi+ v v)"""
-    m_B = par_dict['m_B+']
-    r_tau = par_dict['m_tau'] / m_B
-    r_pi = par_dict['m_pi+'] / m_B
-    return integrate.quad(_dGamma_dz_pi, 0,
-                          (1 - r_tau ** 2) * (1 - r_pi ** 2 / r_tau ** 2),
-                          (par_dict,))[0]
+def _dGamma_dz_rhoPlus(GF, f_IS, f_FS, m_IS, m_FS, m_tau, tau_tau, z, polarization: str = 'L'):
+    """dGamma/dz(B+ -> rho+ v v)"""
+    r_tau = m_tau / m_IS
+    r_rho = m_FS / m_IS
+    lambda_rhoz = kallen(1, z, r_rho**2)
+    gamma_SM = _Gamma_SM_Bpirho(GF, f_IS, f_FS, m_IS, r_tau, tau_tau)
+    if polarization == 'L':
+        return (
+            gamma_SM
+            * (1 - z - r_rho**2) ** 2
+            * ((1 - r_tau**2) * (1 - r_rho**2 / r_tau**2) - z)
+            / lambda_rhoz
+        )
+    elif polarization == 'T':
+        return (
+            gamma_SM
+            * z
+            * (lambda_rhoz - 2 * (1 - r_tau**2) * (1 - r_rho**2 / r_tau**2) + 2 * z)
+            / lambda_rhoz
+        )
+    else:
+        raise ValueError('polarization must be L or T')
 
 
-def _dGammaT_dz_rho(z, par):
-    """dGamma_T/dz(B+ -> pi+ v v)"""
-    m_B = par['m_B+']
-    r_tau = par['m_tau'] / m_B
-    r_rho = par['m_rho+'] / m_B
-    lambda_rhoz = kallen(1, z, r_rho ** 2)
-    # temp = 2 * (1 - r_tau ** 2) * (1 - r_rho ** 2 / r_tau ** 2) + 2 * z
-    # print('lambda_rhoz ', lambda_rhoz)
-    # print('reson: ', lambda_rhoz - 2 * (1 - r_tau**2) *
-    #                          (1 - r_rho**2 / r_tau**2) + 2 * z)
-
-    pre_factor = m_B ** 6 * r_tau ** 5 * par['f_B+'] ** 2 * par['f_rho0'] ** 2 * \
-                 abs(xi('u', 'bd')(par)) ** 2 * par['GF'] ** 4 * par['tau_tau'] / (64 * np.pi ** 2)
-    return pre_factor * z * (lambda_rhoz - 2 * (1 - r_tau ** 2) *
-                             (1 - r_rho ** 2 / r_tau ** 2) + 2 * z) / lambda_rhoz
-
-
-def _dGammaL_dz_rho(z, par):
-    """dGamma_T/dz(B+ -> pi+ v v)"""
-    m_B = par['m_B+']
-    r_tau = par['m_tau'] / m_B
-    r_rho = par['m_rho+'] / m_B
-    lambda_rhoz = kallen(1, z, r_rho ** 2)
-
-    pre_factor = m_B ** 6 * r_tau ** 5 * par['f_B+'] ** 2 * par['f_rho0'] ** 2 * \
-                 abs(xi('u', 'bd')(par)) ** 2 * par['GF'] ** 4 * par['tau_tau'] / (64 * np.pi ** 2)
-    return pre_factor * (1 - z - r_rho ** 2) ** 2 * (
-            (1 - r_tau ** 2) * (1 - r_rho ** 2 / r_tau ** 2) - z) / lambda_rhoz
-
-
-def BR_rho(wc_obj, par_dict):
-    """BR(B+ -> rho+ v v)"""
-    m_B = par_dict['m_B+']
-    r_tau = par_dict['m_tau'] / m_B
-    r_rho = par_dict['m_rho+'] / m_B
-    return integrate.quad(_dGammaL_dz_rho, 0, (1 - r_tau ** 2) * (1 - r_rho ** 2 / r_tau ** 2), (par_dict,))[0] + \
-        integrate.quad(_dGammaT_dz_rho, 0, (1 - r_tau ** 2) * (1 - r_rho ** 2 / r_tau ** 2), (par_dict,))[0]
-
-
-def _dGamma_dz_K(z, par):
+def _dGamma_dz_KPlus(GF, alpha, C_L_sbnunu, ffs, m_IS, m_FS, z):
     """dGamma/dz(B+ -> K+ v v)"""
-    C_vv = par['C_L_sbnunu']
-    m_B = par['m_B+']
-    r_K = par['m_K+'] / m_B
-    lambda_Kz = kallen(1, z, r_K ** 2)
+    r_K = m_FS / m_IS
+    lambda_Kz = kallen(1, z, r_K**2)
+    gamma_SM = _Gamma_SM_BK(GF, alpha, C_L_sbnunu, m_IS)
+    ff_fplus = ffs['f+']
 
-    pre_factor = m_B ** 5 * abs(xi('u', 'bd')(par)) ** 2 \
-                 * (par['GF'] * par['alpha_e'] * C_vv) ** 2 / (256 * np.pi ** 5)
-
-    return pre_factor * np.sqrt(lambda_Kz) ** 3 * par['B->K form factor f+'] ** 2
+    return gamma_SM * np.sqrt(lambda_Kz) ** 3 * ff_fplus**2
 
 
-def BR_K(wc_obj, par_dict):
-    """BR(B+ -> K+ v v)"""
-    r_K = par_dict['m_K+'] / par_dict['m_B+']
-    return integrate.quad(_dGamma_dz_K, 0, (1 - r_K) ** 2, (par_dict, ))[0] * par_dict['tau_B+']
+def _dGamma_dz_KstarPlus(GF, alpha, C_L_sbnunu, ffs, m_IS, m_FS, z, polarization: str = 'L'):
+    """dGamma/dz(B+ -> K*+ v v)"""
+    r_FS = m_FS / m_IS
+    lambda_Kz = kallen(1, z, r_FS**2)
+    gamma_SM = _Gamma_SM_BK(GF, alpha, C_L_sbnunu, m_IS)
+    ff_V = ffs['V']
+    ff_A1 = ffs['A1']
+    ff_L = ffs['A2'] - (1 + r_FS) ** 2 * (1 - r_FS**2 - z) * ff_A1 / lambda_Kz
+    if polarization == 'T':
+        return (
+            gamma_SM
+            * 2
+            * z
+            * np.sqrt(lambda_Kz)
+            * (lambda_Kz * ff_V**2 / (1 + r_FS) ** 2 + (1 + r_FS) ** 2 * ff_A1**2)
+        )
+    elif polarization == 'L':
+        return gamma_SM * np.power(lambda_Kz, 5.0 / 2.0) * ff_L**2 / (4 * r_FS**2 * (1 + r_FS) ** 2)
+    else:
+        raise ValueError('polarization must be L or T')
 
 
-if __name__ == "__main__":
-    # import flavio
+def partial_width_B2pi_plus(par, qsq):
+    GF = par['GF']
+    m_IS = par['m_B+']
+    m_FS = par['m_pi+']
+    f_IS = par['f_B+']
+    f_FS = par['f_pi+']
+    m_tau = par['m_tau']
+    tau_tau = par['tau_tau']
+    z = qsq / m_IS**2
+    return _dGamma_dz_piPlus(GF, f_IS, f_FS, m_IS, m_FS, m_tau, tau_tau, z)
 
-    # par = flavio.default_parameters.get_central_all()
-    # par.update({
-    #     'f_Bs': 0.2388,
-    #     'f_B0': 0.1928,
-    #     'B->pi form factor f0': 0.258,
-    #     'B->pi form factor f+': 0.258,
-    #     'B->pi form factor fT': 0.253,
-    #     'B->K form factor f0': 0.331,
-    #     'B->K form factor f+': 0.331,
-    #     'B->K form factor fT': 0.358
-    # })
 
-    # print(Observable['BR(B+->pivv)'].prediction.function(None, par))
-    # print(Observable['BR(B+->Kvv)'].prediction.function(None, par))
-    # _dGammaT_dz_rho(0, par)
-    print(partial_width_B_pi(dict({}), 0, 0, 5.28, 0.14, 0.1))
+def partial_width_B2rho_plus(par, qsq, polarization='T'):
+    GF = par['GF']
+    m_IS = par['m_B+']
+    m_FS = par['m_rho+']
+    f_IS = par['f_B+']
+    f_FS = par['f_rho+']
+    m_tau = par['m_tau']
+    tau_tau = par['tau_tau']
+    z = qsq / m_IS**2
+    return _dGamma_dz_rhoPlus(GF, f_IS, f_FS, m_IS, m_FS, m_tau, tau_tau, z, polarization)
+
+
+def partial_width_B2K_plus(par, ffs, m_IS, m_FS, qsq):
+    GF = par['GF']
+    alpha = par['alpha_e']
+    C_L_sbnunu = par['C_L_sbnunu']
+    z = qsq / m_IS**2
+    return _dGamma_dz_KPlus(GF, alpha, C_L_sbnunu, ffs, m_IS, m_FS, z)
+
+
+def partial_width_B2Kstar_plus(par, ffs, m_IS, m_FS, qsq, polarization):
+    GF = par['GF']
+    alpha = par['alpha_e']
+    C_L_sbnunu = par['C_L_sbnunu']
+    z = qsq / m_IS**2
+    return _dGamma_dz_KstarPlus(GF, alpha, C_L_sbnunu, ffs, m_IS, m_FS, z, polarization)

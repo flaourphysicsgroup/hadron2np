@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import hadron2np
+from hadron2np.DecayProcess import SMDecayProcess
 
 
 class TestBDecayProcessWidth:
@@ -312,10 +313,9 @@ class TestBDecayProcessWidth:
 
     # ==================== 标准模型过程中微子 nu ====================
     
-    @pytest.mark.skip(reason="B+ -> K+ nu nu SM过程代码中有bug: xi函数调用错误")
     def test_B_to_K_nu_nu_SM_process(self, parameters):
         """特别测试 B+ -> K+ nu nu 标准模型过程"""
-        process = hadron2np.new_decay_process(
+        process: SMDecayProcess = hadron2np.new_decay_process(
             ['B+', 'K+', 'nu', 'nu'], 
             basis='DLEFT(S/P)', 
             ff_imp='LCSR-pole 2004'
@@ -324,11 +324,7 @@ class TestBDecayProcessWidth:
         assert process.dm_name == 'nu'
         assert process.dms == ['nu', 'nu']
         
-        # 标准模型过程使用空 Wilson 系数
-        wcs = {}
-        m_dm = [0, 0]
-        
-        width = process.width(wcs=wcs, m_dm=m_dm)
+        width = process.width()
         assert isinstance(width, (float, complex, np.floating))
         assert np.real(width) >= 0
 

@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import hadron2np
+from hadron2np.DecayProcess import SMDecayProcess
 
 
 class TestLambdaBDecayProcessWidth:
@@ -313,7 +314,7 @@ class TestLambdaBDecayProcessWidth:
     
     def test_Lambdab_to_Lambda_nu_nu_SM_process(self, parameters):
         """特别测试 Lambda_b -> Lambda nu nu 标准模型过程"""
-        process = hadron2np.new_decay_process(
+        process:SMDecayProcess = hadron2np.new_decay_process(
             ['Lambda_b', 'Lambda', 'nu', 'nu'], 
             basis='DLEFT(S/P)', 
             ff_imp='LQCD-2016-nominal'
@@ -321,17 +322,14 @@ class TestLambdaBDecayProcessWidth:
         
         assert process.dm_name == 'nu'
         assert process.dms == ['nu', 'nu']
+
         
-        # 标准模型过程使用空 Wilson 系数
-        wcs = {}
-        m_dm = [0, 0]
-        
-        width = process.width(wcs=wcs, m_dm=m_dm)
+        width = process.width()
         assert isinstance(width, (float, np.floating))
         assert width >= 0
         
         # 计算分支比
-        br = process.branching_ratio(wcs=wcs, m_dm=m_dm)
+        br = process.branching_ratio()
         assert isinstance(br, (float, np.floating))
         assert br >= 0
         

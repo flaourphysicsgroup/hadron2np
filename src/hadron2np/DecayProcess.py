@@ -225,15 +225,6 @@ class ThreeBodyDecayProcess(DecayProcessBase):
         self.set_dm_masses(m_dm)
         if (self.FS == '0') or (len(self.dms) < 2):
             raise ValueError(f'物理意义不明确: {self.name} 微分宽度.')
-        elif self.dm_name == 'nu':
-            # 标准模型过程直接返回
-            bare_dWidth = self.analytic_dir.partial_width_3_1_1(
-                self._formfactor,
-                self.m_sm,
-                f'{self.IS}->{self.FS}',
-                qsq,
-            )
-            return bare_dWidth
         else:
             bare_dWidth = self.analytic_dir.partial_width_3_1_1(
                 self.wcs,
@@ -277,3 +268,49 @@ class ThreeBodyDecayProcess(DecayProcessBase):
         width = self.width(wcs, m_dm)
         width_IS = self.par['Gamma_' + self.IS]
         return width / (width + width_IS)
+
+
+class SMDecayProcess(DecayProcessBase):
+    """衰变到中微子末态的过程"""
+    def __init__(self, particles: list, basis, parameter=hadron2np.parameters_dict, ff_imp=None):
+        super().__init__(particles, basis, parameter, ff_imp)
+    
+    def dWidth_over_dqsq(self, qsq, polarization = None) -> float:
+        self.set_dm_masses((0, 0))
+        bare_dWidth = sm_invisible.partial_width_3_1_1(
+            self._formfactor, self.m_sm, f'{self.IS}->{self.FS}', qsq, polarization
+        )
+        # 考虑中性的 pi0 中会有一个 sqrt(2)
+        CG_factor = 1 / 2.0 if self.FS in ['pi0', 'rho0'] else 1.0
+        dwidth = bare_dWidth * CG_factor
+        return dwidth
+
+    def dBr_over_dqsq(self, qsq, polarization=None) -> float:
+        dwidth = self.dWidth_over_dqsq(qsq, polarization)
+        width_IS = self.IS_width
+        # 返回 BR = Gamma / Gamma_total
+        return dwidth / width_IS
+
+    def width(self):
+        """计算衰变总宽度"""
+        m_IS, m_FS, _, _ = self.get_sm_masses()
+        m_tau = self.par['m_tau']
+        q2_min = 0
+        q2_max = (m_IS - m_FS)**2
+
+        if self.FS in ['pi+', 'rho+']:
+            q2_max = (m_IS**2 - m_tau**2)*(m_tau**2 - m_FS**2)/m_tau**2
+        if self.FS in ['rho+','rho0', 'K*+', 'K*0']:
+            def _dGamma_dqsq(qsq):
+                return self.dWidth_over_dqsq(qsq, polarization='T') + self.dWidth_over_dqsq(qsq, polarization='L')
+        else:
+            def _dGamma_dqsq(qsq):
+                return self.dWidth_over_dqsq(qsq)
+            
+        width = integrate.quad(_dGamma_dqsq, q2_min, q2_max)[0]
+        return width
+
+    def branching_ratio(self) -> float:
+        width = self.width()
+        width_IS = self.par['Gamma_' + self.IS]
+        return width / width_IS
